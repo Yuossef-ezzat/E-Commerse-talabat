@@ -33,7 +33,7 @@ namespace TalabatDemo
 
             using var scope = app.Services.CreateScope();
             var seed = scope.ServiceProvider.GetRequiredService<IDataSeeding>();
-            seed.DataSeed();
+            seed.DataSeedAsync();
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
