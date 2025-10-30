@@ -1,0 +1,46 @@
+﻿using Microsoft.AspNetCore.Mvc;
+using ServiceAbstractionLayer;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace PresentationLayer
+{
+    [ApiController]
+    [Route("api/[controller]")]
+    public class ProductsController(IServiceManager _serviceManager) : ControllerBase
+    {
+        [HttpGet]
+        public async Task<ActionResult> GetAllProducts()
+        {
+            var products = await _serviceManager.ProductService.GetProductsAsync();
+            return Ok(products);
+        }
+
+        [HttpGet]
+        [Route("{id}")]
+        public async Task<ActionResult> GetProductById(int id)
+        {
+            var product = await _serviceManager.ProductService.GetProductByIdAsync(id);
+            if (product == null)
+                return NotFound();
+            return Ok(product);
+        }
+        [HttpGet]
+        [Route("Brand")]
+        public async Task<ActionResult> GetProductsByBrand()
+        {
+            var brands = await _serviceManager.ProductService.GetBrandsAsync();
+            return Ok(brands);
+        }
+        [HttpGet]
+        [Route("Type")]
+        public async Task<ActionResult> GetProductsByType()
+        {
+            var types = await _serviceManager.ProductService.GetTypesAsync();
+            return Ok(types);
+        }
+    }
+    }

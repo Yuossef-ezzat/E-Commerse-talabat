@@ -3,6 +3,9 @@ using DomainLayer.Contracts;
 using Microsoft.EntityFrameworkCore;
 using PresistenceLayer;
 using PresistenceLayer.Data;
+using PresistenceLayer.Repositories;
+using ServiceAbstractionLayer;
+using ServicesLayer;
 
 namespace TalabatDemo
 {
@@ -26,6 +29,9 @@ namespace TalabatDemo
                 }
                 );
             builder.Services.AddScoped<IDataSeeding, DataSeeding>();
+            builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+            builder.Services.AddAutoMapper((x)=>{ },typeof(ServiceAssemblyReference).Assembly);
+            builder.Services.AddScoped<IServiceManager, ServiceManager>();
 
             #endregion
 
@@ -46,6 +52,7 @@ namespace TalabatDemo
 
             app.UseAuthorization();
 
+            app.UseStaticFiles();
 
             app.MapControllers();
 

@@ -18,6 +18,10 @@
     <ProjectReference Include="..\Infrastructure\PresentationLayer\PresentationLayer.csproj" />
     <ProjectReference Include="..\Infrastructure\presistenceLayer\PresistenceLayer.csproj" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\images\products\" />
+  </ItemGroup>
   
 
 </Project>
