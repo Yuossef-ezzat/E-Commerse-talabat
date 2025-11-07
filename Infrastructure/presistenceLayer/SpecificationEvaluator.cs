@@ -13,7 +13,7 @@ namespace PresistenceLayer
     {
         // Create Query
 
-        public static  IQueryable<TEntity> CreateQuery<TEntity,TKey> (IQueryable<TEntity> inputQuery, ISpecififcations<TEntity,TKey> specififcations)
+        public static IQueryable<TEntity> CreateQuery<TEntity,TKey> (IQueryable<TEntity> inputQuery, ISpecififcations<TEntity,TKey> specififcations)
                                                                 where TEntity : BaseEntity<TKey> , new()
         {
             var query = inputQuery;
@@ -22,15 +22,28 @@ namespace PresistenceLayer
             {
                 query = query.Where(specififcations.Criteria);
             }
-            else if (specififcations.IncludeExpressions is not null && specififcations.IncludeExpressions.Count > 0 )
+
+            // Apply Ordering
+            if (specififcations.OrderBy is not null)
+            {
+                query = query.OrderBy(specififcations.OrderBy);
+            }
+            if (specififcations.OrderByDesc is not null)
+            {
+                query = query.OrderByDescending(specififcations.OrderByDesc);
+            }
+
+            // Apply Include Expressions
+            if (specififcations.IncludeExpressions is not null && specififcations.IncludeExpressions.Count > 0 )
             {
                 //foreach (var includeExpression in specififcations.IncludeExpressions)
                 //{
                 //    query = query.Include(includeExpression);
                 //}
-                query = specififcations.IncludeExpressions
+                query =  specififcations.IncludeExpressions
                         .Aggregate(query, (current, includeExpression) => current.Include(includeExpression));
             }
+           
 
             return query;
         }
