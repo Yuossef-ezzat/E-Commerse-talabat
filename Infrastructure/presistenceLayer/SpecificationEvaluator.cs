@@ -1,6 +1,7 @@
 ﻿using DomainLayer.Contracts;
 using DomainLayer.Models;
 using Microsoft.EntityFrameworkCore;
+using Shared;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,7 +14,7 @@ namespace PresistenceLayer
     {
         // Create Query
 
-        public static IQueryable<TEntity> CreateQuery<TEntity,TKey> (IQueryable<TEntity> inputQuery, ISpecififcations<TEntity,TKey> specififcations)
+        public static IQueryable<TEntity> CreateQuery<TEntity,TKey> (IQueryable<TEntity> inputQuery, ISpecififcations<TEntity,TKey> specififcations  )
                                                                 where TEntity : BaseEntity<TKey> , new()
         {
             var query = inputQuery;
@@ -32,6 +33,13 @@ namespace PresistenceLayer
             {
                 query = query.OrderByDescending(specififcations.OrderByDesc);
             }
+            // Apply Pagination
+            if (specififcations.IsPaginated)
+            {
+                query = query.Skip(specififcations.Skip).Take(specififcations.Take);
+            }
+
+
 
             // Apply Include Expressions
             if (specififcations.IncludeExpressions is not null && specififcations.IncludeExpressions.Count > 0 )

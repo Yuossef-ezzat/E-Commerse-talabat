@@ -62,6 +62,11 @@ namespace PresistenceLayer.Repositories
             return await SpecificationEvaluator.CreateQuery(_context.Set<TEntity>().AsQueryable(), specififcations)
                 .ToListAsync();
         }
+        public async Task<int> CountAsync(ISpecififcations<TEntity, TKey> specififcations)
+        {
+            return await SpecificationEvaluator.CreateQuery(_context.Set<TEntity>().AsQueryable(), specififcations)
+                .CountAsync();
+        }
         #endregion
     }
 }

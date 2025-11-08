@@ -10,7 +10,7 @@ namespace DomainLayer.Contracts
 {
     public interface IProductService
     {
-        Task<IEnumerable<ProductDto>> GetProductsAsync(ProductQueryParams productQuery);
+        Task<PaginatedResult<ProductDto>> GetProductsAsync(ProductQueryParams productQuery);
         Task<ProductDto?> GetProductByIdAsync(int id);
         Task<IEnumerable<BrandDto>> GetBrandsAsync();
         Task<IEnumerable<TypeDto>> GetTypesAsync();

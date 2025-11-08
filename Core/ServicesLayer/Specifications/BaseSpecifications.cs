@@ -20,7 +20,18 @@ namespace ServicesLayer.Specifications
 
         public List<Expression<Func<TEntity, object>>> IncludeExpressions { get; } = [];
 
-       
+        #region Pagination
+        public int Take { get; private set; }
+        public int Skip { get; private set; }
+        public bool IsPaginated { get; set; }    
+
+        protected void ApplyPagination(int pageSize , int PageIndex)
+        {
+            IsPaginated = true;
+            Take = pageSize;
+            Skip = (PageIndex-1) * pageSize;
+        } 
+        #endregion
 
         protected void AddInclude(Expression<Func<TEntity, object>> includeExpression)
         {

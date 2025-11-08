@@ -22,12 +22,20 @@ namespace ServicesLayer
             var repo = _unitOfWork.GetRepository<Product, int>();
             return _mapper.Map<ProductDto>(await repo.GetByIdAsync(specs));
         }
-        public async Task<IEnumerable<ProductDto>> GetProductsAsync(ProductQueryParams productQuery)
+
+        public async Task<PaginatedResult<ProductDto>> GetProductsAsync(ProductQueryParams productQuery)
         {
             // Create Object from spcification
+            var repo = _unitOfWork.GetRepository<Product, int>();
             var specs = new ProductWithBrandAndTypeSpecification(productQuery);
-            var products = await _unitOfWork.GetRepository<Product, int>().GetAllAsync(specs);
-            return _mapper.Map<IEnumerable<ProductDto>>(products);
+            var products = await repo.GetAllAsync(specs);
+            var mapedProduct = _mapper.Map<IEnumerable<ProductDto>>(products);
+            // Get Total Count
+            var countSpecs = new ProductCountSpecification(productQuery);
+            var Count = await repo.CountAsync(countSpecs);
+
+            var returnObj = new PaginatedResult<ProductDto>(productQuery.PageIndex, productQuery.PageSize , Count , mapedProduct);
+            return returnObj;
         }
 
         #region Type and Brand

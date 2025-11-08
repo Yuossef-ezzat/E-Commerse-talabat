@@ -16,11 +16,16 @@ namespace ServicesLayer.Specifications
         // Constructor for Get All
         public ProductWithBrandAndTypeSpecification(ProductQueryParams productQuery) 
             : base(p=>(!productQuery.brandId.HasValue || p.BrandId == productQuery.brandId)
-                   &&(!productQuery.typeId.HasValue || p.TypeId == productQuery.typeId))
+                   &&(!productQuery.typeId.HasValue || p.TypeId == productQuery.typeId)
+                   &&(string.IsNullOrWhiteSpace(productQuery.searchvalue) || p.Name.ToLower().Contains(productQuery.searchvalue.ToLower())))
         //p => p.BrandId == brandId && p.TypeId == typeId false case 
         {
+            // Includes
             AddInclude(p => p.ProductBrand);
             AddInclude(p => p.ProductType);
+
+            // Pagination
+            ApplyPagination(productQuery.PageSize, productQuery.PageIndex);
 
             // Sorting
             switch (productQuery.sortingOptions) {
