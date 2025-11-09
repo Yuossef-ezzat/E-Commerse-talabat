@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using DomainLayer.Models;
+using DomainLayer.Models.Product;
 using Shared.DTOs;
 using System;
 using System.Collections.Generic;
