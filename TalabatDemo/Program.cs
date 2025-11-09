@@ -11,6 +11,7 @@ using ServicesLayer;
 using Shared.ErrorModels;
 using TalabatDemo.CustomMiddleWares;
 using TalabatDemo.Factories;
+using TalabatDemo.Extentions;
 
 namespace TalabatDemo
 {
@@ -24,31 +25,20 @@ namespace TalabatDemo
             #region services container.
 
             builder.Services.AddControllers();
-            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-            builder.Services.AddEndpointsApiExplorer();
-            builder.Services.AddSwaggerGen();
-            builder.Services.AddDbContext<StoreDbContext>(
-                options =>
-                {
-                    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
-                }
-                );
-            builder.Services.AddScoped<IDataSeeding, DataSeeding>();
-            builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
-            builder.Services.AddAutoMapper((x) => { }, typeof(ServiceAssemblyReference).Assembly);
-            builder.Services.AddScoped<IServiceManager, ServiceManager>();
 
-            builder.Services.Configure<ApiBehaviorOptions>( (options) =>
-            {
-                options.InvalidModelStateResponseFactory = ApiResponseFactory.AddCustomApiResponceFactory ;
-            });
+            builder.Services.AddSwaggerServices();  // extension method for swagger services
+
+            builder.Services.AddValidationServices(); // extension method for validation services
+
+            builder.Services.AddInfrastructureServices(builder.Configuration); // extension method for infrastructure services // Configuration for GetConnectionString
+
+            builder.Services.AddApplicationServices(); // extension method for application services
+
             #endregion
 
             var app = builder.Build();
 
-            using var scope = app.Services.CreateScope();
-            var seed = scope.ServiceProvider.GetRequiredService<IDataSeeding>();
-            seed.DataSeedAsync();
+            app.SeedDataAsync(); // extension method for seeding data
 
             app.UseMiddleware<CustomExceptionHandlerMiddleWare>();
             
