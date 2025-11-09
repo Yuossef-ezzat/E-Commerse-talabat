@@ -6,6 +6,7 @@ using PresistenceLayer.Data;
 using PresistenceLayer.Repositories;
 using ServiceAbstractionLayer;
 using ServicesLayer;
+using TalabatDemo.CustomMiddleWares;
 
 namespace TalabatDemo
 {
@@ -40,6 +41,8 @@ namespace TalabatDemo
             using var scope = app.Services.CreateScope();
             var seed = scope.ServiceProvider.GetRequiredService<IDataSeeding>();
             seed.DataSeedAsync();
+
+            app.UseMiddleware<CustomExceptionHandlerMiddleWare>();
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())

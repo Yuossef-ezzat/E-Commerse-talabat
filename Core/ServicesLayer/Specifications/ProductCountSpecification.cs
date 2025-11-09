@@ -10,7 +10,7 @@ namespace ServicesLayer.Specifications
 {
     public class ProductCountSpecification : BaseSpecifications<Product,int>
     {
-        // Constructor for Get All
+        // Constructor for Count All
         public ProductCountSpecification(ProductQueryParams productQuery)
             : base(p => (!productQuery.brandId.HasValue || p.BrandId == productQuery.brandId)
                    && (!productQuery.typeId.HasValue || p.TypeId == productQuery.typeId)
