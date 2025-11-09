@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using DomainLayer.Contracts;
+using DomainLayer.Exceptions;
 using DomainLayer.Models;
 using ServicesLayer.Specifications;
 using Shared;
@@ -19,8 +20,10 @@ namespace ServicesLayer
         {
             var specs = new ProductWithBrandAndTypeSpecification(id);
 
-            var repo = _unitOfWork.GetRepository<Product, int>();
-            return _mapper.Map<ProductDto>(await repo.GetByIdAsync(specs));
+            var product = await _unitOfWork.GetRepository<Product, int>().GetByIdAsync(specs);
+            if(product is null)throw new ProductNotFoundException(id);
+
+            return _mapper.Map<ProductDto>(product);
         }
 
         public async Task<PaginatedResult<ProductDto>> GetProductsAsync(ProductQueryParams productQuery)
