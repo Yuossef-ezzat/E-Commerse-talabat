@@ -17,7 +17,8 @@ namespace PresistenceLayer.Repositories
         {
             var JsonData = JsonSerializer.Serialize(Basket);
             var ISCreated = _database.StringSet(Basket.Id, JsonData, TimeLive ?? TimeSpan.FromDays(30));
-            
+            if (!ISCreated)
+                return null;
             return await Task.FromResult<CustomerBasket?>(Basket); 
         }
 
@@ -28,7 +29,9 @@ namespace PresistenceLayer.Repositories
         public async Task<CustomerBasket?> GetBasketAsync(string Id)
         {
             var data =  _database.StringGet(Id);
-           
+            if (data.IsNullOrEmpty)
+                return null;
+
             return JsonSerializer.Deserialize<CustomerBasket>(data!);
         }
     }

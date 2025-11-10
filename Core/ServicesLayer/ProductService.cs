@@ -4,7 +4,7 @@ using DomainLayer.Exceptions;
 using DomainLayer.Models.Product;
 using ServicesLayer.Specifications;
 using Shared;
-using Shared.DTOs;
+using Shared.DTOs.ProductDtos;
 using System;
 using System.Collections.Generic;
 using System.Linq;
