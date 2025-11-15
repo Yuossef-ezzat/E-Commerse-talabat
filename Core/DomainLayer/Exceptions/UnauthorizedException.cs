@@ -4,12 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DomainLayer.Contracts
+namespace DomainLayer.Exceptions
 {
-    public interface IDataSeeding
+    public sealed class UnauthorizedException(string msg= "UnauthorizedException") : Exception(msg)
     {
-        Task DataSeedAsync();
-        Task IdentityDataSeedAsync();
-
     }
 }

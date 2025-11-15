@@ -17,7 +17,7 @@ namespace Shared
         private const int maxPageSize = 10;
         private const int DefultPageSize = 5;
         public int PageIndex { get; set; } = 1;
-        private int pageSize = 5;
+        private int pageSize = DefultPageSize;
 
         public int PageSize
         {

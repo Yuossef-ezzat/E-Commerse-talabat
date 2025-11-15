@@ -9,6 +9,7 @@ namespace TalabatDemo.Extentions
             using var scope = app.Services.CreateScope();
             var seed = scope.ServiceProvider.GetRequiredService<IDataSeeding>();
             await seed.DataSeedAsync();
+            await seed.IdentityDataSeedAsync();
         }
     }
 }
