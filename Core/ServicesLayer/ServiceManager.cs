@@ -26,7 +26,7 @@ namespace ServicesLayer
             = new Lazy<IBasketService>( ()=>new BasketService(_basketRepository, _mapper));
 
         private readonly Lazy<IAuthenticationService> _LazyAuthenticationService
-            = new Lazy<IAuthenticationService>( ()=>new AuthenticationService(_userManager , _configuration));
+            = new Lazy<IAuthenticationService>( ()=>new AuthenticationService(_userManager , _configuration ,_mapper));
 
 
 

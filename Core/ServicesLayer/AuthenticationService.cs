@@ -9,11 +9,80 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using System.IdentityModel.Tokens.Jwt;
 using Microsoft.Extensions.Configuration;
+using Shared.DTOs;
+using Microsoft.EntityFrameworkCore;
+using AutoMapper;
 
 namespace ServicesLayer
 {
-    public class AuthenticationService(UserManager<ApplicationUser> _userManager,IConfiguration _configuration) : IAuthenticationService
+    public class AuthenticationService(UserManager<ApplicationUser> _userManager,
+                                        IConfiguration _configuration,
+                                        IMapper _mapper) : IAuthenticationService
     {
+        public async Task<bool> CheckEmailAsync(string email)
+        {
+            var user = await _userManager.FindByEmailAsync(email);
+            return user is not null;
+        }
+        public async Task<UserDto> GetCurrentUserAsync(string email)
+        {
+            var user = await _userManager.FindByEmailAsync(email);
+            if (user is null)
+                throw new UserNotFoundException(email);
+            return new UserDto()
+            {
+                Email = user.Email!,
+                DisplayName = user.DisplayName,
+                Token =await GenerateJwtToken(user)
+            };
+        }
+        public async Task<AddressDto> GetCurrentUserAddressAsync(string email)
+        {
+            var user = await _userManager.Users.Include(u=> u.Address).FirstOrDefaultAsync() 
+                            ?? throw new UserNotFoundException(email) ;
+            if (user.Address is not null)
+               return _mapper.Map<AddressDto>(user.Address);
+            else 
+                throw new AddressNotFoundException(user.UserName!);
+
+        }
+
+        public async Task<AddressDto> CreateUserAddressAsync(string email, AddressDto addressDto)
+        {
+            var user = await _userManager.Users.Include(u => u.Address).FirstOrDefaultAsync()
+                            ?? throw new UserNotFoundException(email);
+            if (user.Address is not null) //update existing address
+            {
+                user.Address.FirstName = addressDto.FirstName;
+                user.Address.LastName = addressDto.LastName;
+                user.Address.Street = addressDto.Street;
+                user.Address.City = addressDto.City;
+                user.Address.Country = addressDto.Country;
+
+                var result = await _userManager.UpdateAsync(user);
+                if (!result.Succeeded)
+                {
+                    var errors = result.Errors.Select(e => e.Description).ToList();
+                    throw new BadRequestException(errors);
+                }
+            }
+            else //create new address
+            {
+               user.Address = _mapper.Map<Address>(addressDto);
+                var result = await _userManager.UpdateAsync(user);
+                if (!result.Succeeded)
+                {
+                    var errors = result.Errors.Select(e => e.Description).ToList();
+                    throw new BadRequestException(errors);
+                }
+            } 
+            await _userManager.UpdateAsync(user);
+            return _mapper.Map<AddressDto>(user.Address);
+        }
+
+
+
+        #region Login & Register
         public async Task<UserDto> LoginAsync(LoginDto loginDto)
         {
             var User = await _userManager.FindByEmailAsync(loginDto.Email);
@@ -57,7 +126,7 @@ namespace ServicesLayer
                 throw new BadRequestException(errors);
             }
         }
-        
+
         private async Task<string> GenerateJwtToken(ApplicationUser user)
         {
             // create the payload from the user info {Claims}
@@ -89,5 +158,8 @@ namespace ServicesLayer
 
             return TokenHandler;
         }
+
+        #endregion
+
     }
 }
