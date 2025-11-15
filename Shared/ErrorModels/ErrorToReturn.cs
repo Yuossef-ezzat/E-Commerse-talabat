@@ -10,5 +10,6 @@ namespace Shared.ErrorModels
     {
         public int StutsCode { get; set; }
         public string ErrorMsg { get; set; } = null!;
+        public List<string>? errors { get; set; }
     }
 }

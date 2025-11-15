@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using ServiceAbstractionLayer;
 using Shared;
 using Shared.DTOs.ProductDtos;
@@ -12,6 +13,7 @@ namespace PresentationLayer.Controller
 {
     [ApiController]
     [Route("api/[controller]")]
+    //[Authorize("Admin")]
     public class ProductsController(IServiceManager _serviceManager) : ControllerBase
     {
         [HttpGet]
