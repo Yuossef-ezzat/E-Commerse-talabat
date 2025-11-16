@@ -49,7 +49,7 @@ namespace ServicesLayer
 
         public async Task<AddressDto> CreateUserAddressAsync(string email, AddressDto addressDto)
         {
-            var user = await _userManager.Users.Include(u => u.Address).FirstOrDefaultAsync()
+            var user = await _userManager.Users.Include(u => u.Address).FirstOrDefaultAsync(u => u.Email == email)
                             ?? throw new UserNotFoundException(email);
             if (user.Address is not null) //update existing address
             {
