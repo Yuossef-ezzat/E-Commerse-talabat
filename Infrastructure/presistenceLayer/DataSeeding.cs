@@ -1,5 +1,6 @@
 ﻿using DomainLayer.Contracts;
 using DomainLayer.Models.IdentityModule;
+using DomainLayer.Models.OrderModels;
 using DomainLayer.Models.Product;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -53,6 +54,16 @@ namespace PresistenceLayer
                        await storeDbContext.Products.AddRangeAsync(Products);
                     }
                 }
+                if (!storeDbContext.Set<DeliveryMethod>().Any())
+                {
+                    var DeliveryMethod = File.OpenRead(@"..\Infrastructure\presistenceLayer\Data\DataSeeding\delivery.json");///
+                    var DeliveryMethods= await System.Text.Json.JsonSerializer.DeserializeAsync<List<DeliveryMethod>>(DeliveryMethod);
+                    if (DeliveryMethods != null && DeliveryMethods.Count > 0)
+                    {
+                       await storeDbContext.AddRangeAsync(DeliveryMethods);
+                    }
+                }
+
                 await storeDbContext.SaveChangesAsync();
 
 

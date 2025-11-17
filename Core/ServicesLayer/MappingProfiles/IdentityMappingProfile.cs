@@ -14,4 +14,5 @@ namespace ServicesLayer.MappingProfiles
         {
             CreateMap<Address, AddressDto>().ReverseMap();
         }
+    }
 }
