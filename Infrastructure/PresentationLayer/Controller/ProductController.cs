@@ -14,7 +14,7 @@ namespace PresentationLayer.Controller
     [ApiController]
     [Route("api/[controller]")]
     //[Authorize("Admin")]
-    public class ProductsController(IServiceManager _serviceManager) : ControllerBase
+    public class ProductsController(IServiceManager _serviceManager) : ApiControllerBase
     {
         [HttpGet]
         public async Task<ActionResult<PaginatedResult<ProductDto>>> GetAllProducts([FromQuery]ProductQueryParams productQuery)

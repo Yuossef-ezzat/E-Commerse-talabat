@@ -12,9 +12,8 @@ using System.Threading.Tasks;
 
 namespace PresentationLayer.Controller
 {
-    [ApiController]
-    [Route("api/[controller]")]
-    public class AuthenticationController(IServiceManager _serviceManager) : ControllerBase
+   
+    public class AuthenticationController(IServiceManager _serviceManager) : ApiControllerBase
     {
         [HttpPost("login")]
         public async Task<ActionResult<UserDto>> Login(LoginDto loginDto)
