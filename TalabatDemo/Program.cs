@@ -26,7 +26,7 @@ namespace TalabatDemo
 
             builder.Services.AddControllers();
 
-            builder.Services.AddSwaggerServices();  // extension method for swagger services
+            builder.Services.AddSwaggerServices(builder.Configuration);  // extension method for swagger services
 
             builder.Services.AddValidationServices(); // extension method for validation services
 
@@ -51,6 +51,8 @@ namespace TalabatDemo
 
             app.UseHttpsRedirection();
 
+
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseStaticFiles();

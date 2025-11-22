@@ -9,8 +9,8 @@ using System.Threading.Tasks;
 namespace PresentationLayer.Controller
 {
     [ApiController]
-    [Route("api/ [Controller]")]
-    public abstract class ApiControllerBase : ControllerBase
+    [Route("api/[Controller]")]
+    public class ApiControllerBase : ControllerBase
     {
         protected string GetEmailFromToken() => User.FindFirstValue(ClaimTypes.Email)!;
     }

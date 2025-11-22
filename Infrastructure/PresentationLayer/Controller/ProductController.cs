@@ -13,7 +13,7 @@ namespace PresentationLayer.Controller
 {
     [ApiController]
     [Route("api/[controller]")]
-    //[Authorize("Admin")]
+    //[Authorize]
     public class ProductsController(IServiceManager _serviceManager) : ApiControllerBase
     {
         [HttpGet]
