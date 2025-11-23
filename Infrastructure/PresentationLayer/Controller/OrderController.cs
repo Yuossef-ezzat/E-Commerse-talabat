@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 namespace PresentationLayer.Controller
 {
 
+    [Authorize]
     public class OrderController(IServiceManager _serviceManager) : ApiControllerBase
     {
         [HttpPost]

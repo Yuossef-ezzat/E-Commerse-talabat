@@ -12,6 +12,7 @@ using Shared.ErrorModels;
 using TalabatDemo.CustomMiddleWares;
 using TalabatDemo.Factories;
 using TalabatDemo.Extentions;
+using Swashbuckle.AspNetCore.SwaggerUI;
 
 namespace TalabatDemo
 {
@@ -46,7 +47,17 @@ namespace TalabatDemo
             if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();
-                app.UseSwaggerUI();
+                app.UseSwaggerUI(options =>
+                {
+                    options.ConfigObject = new ConfigObject()
+                    {
+                        DisplayRequestDuration = true
+                    };
+                    options.DocumentTitle = "Talabat Ecommerce APP";
+                    options.DocExpansion(DocExpansion.None);
+                    options.EnableFilter();
+                    options.EnablePersistAuthorization();
+                });
             }
 
             app.UseHttpsRedirection();
