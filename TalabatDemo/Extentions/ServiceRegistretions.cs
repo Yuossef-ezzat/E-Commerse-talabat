@@ -37,6 +37,7 @@ namespace TalabatDemo.Extentions
                     ValidateIssuer = true,
                     ValidIssuer = configuration["JwtOptions:Issuer"],
                     ValidateAudience =true,
+                    //ClockSkew = TimeSpan.FromHours(24),
                     ValidAudience = configuration["JwtOptions:Audience"],
                     ValidateLifetime =true,
                     ValidateIssuerSigningKey = true,
