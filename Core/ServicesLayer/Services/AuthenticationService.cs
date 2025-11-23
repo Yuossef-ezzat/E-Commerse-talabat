@@ -13,7 +13,7 @@ using Shared.DTOs;
 using Microsoft.EntityFrameworkCore;
 using AutoMapper;
 
-namespace ServicesLayer
+namespace ServicesLayer.Services
 {
     public class AuthenticationService(UserManager<ApplicationUser> _userManager,
                                         IConfiguration _configuration,
