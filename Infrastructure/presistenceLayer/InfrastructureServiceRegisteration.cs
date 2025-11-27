@@ -20,17 +20,14 @@ namespace PresistenceLayer
     {
         public static IServiceCollection AddInfrastructureServices(this IServiceCollection Services, IConfiguration Configuration)
         {
+            #region DB
             Services.AddDbContext<StoreDbContext>(
-                options =>
-                {
-                    options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
-                }
-                );
-            Services.AddScoped<IDataSeeding, DataSeeding>();
-            Services.AddScoped<IUnitOfWork, UnitOfWork>();
-            Services.AddScoped<IBasketRepository, BasketRepository>();
-
-            Services.AddSingleton<IConnectionMultiplexer>( (_) => 
+                   options =>
+                   {
+                       options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
+                   }
+                   );
+            Services.AddSingleton<IConnectionMultiplexer>((_) =>
             {
                 return ConnectionMultiplexer.Connect(Configuration.GetConnectionString("RedisConnection")!);
             });
@@ -43,7 +40,14 @@ namespace PresistenceLayer
 
             Services.AddIdentityCore<ApplicationUser>()
                     .AddRoles<IdentityRole>()
-                    .AddEntityFrameworkStores<StoreIdentityDbContext>();
+                    .AddEntityFrameworkStores<StoreIdentityDbContext>(); 
+            #endregion
+
+            Services.AddScoped<IDataSeeding, DataSeeding>();
+            Services.AddScoped<IUnitOfWork, UnitOfWork>();
+            Services.AddScoped<IBasketRepository, BasketRepository>();
+            Services.AddScoped<ICacheRepository, CacheRepository>();
+
 
             return Services;
         }

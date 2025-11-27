@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using PresentationLayer.Attributes;
 using ServiceAbstractionLayer;
 using Shared;
 using Shared.DTOs.ProductDtos;
@@ -13,10 +14,10 @@ namespace PresentationLayer.Controller
 {
     [ApiController]
     [Route("api/[controller]")]
-    //[Authorize]
     public class ProductsController(IServiceManager _serviceManager) : ApiControllerBase
     {
         [HttpGet]
+        [Cache]
         public async Task<ActionResult<PaginatedResult<ProductDto>>> GetAllProducts([FromQuery]ProductQueryParams productQuery)
         {
             
@@ -33,6 +34,7 @@ namespace PresentationLayer.Controller
                 return NotFound();
             return Ok(product);
         }
+
         [HttpGet]
         [Route("Brand")]
         public async Task<ActionResult> GetProductsByBrand()

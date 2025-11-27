@@ -29,6 +29,8 @@ namespace ServicesLayer
             Services.AddScoped<IOrderService, OrderService>();
             Services.AddScoped<Func<IOrderService>>(provider => () => provider.GetRequiredService<IOrderService>());
 
+            Services.AddScoped<ICacheService, CacheService>();
+
             return Services;
         }
     }
