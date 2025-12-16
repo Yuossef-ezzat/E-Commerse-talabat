@@ -1,0 +1,63 @@
+﻿using DomainLayer.Contracts;
+using DomainLayer.Models;
+using Microsoft.EntityFrameworkCore;
+using Shared;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace PresistenceLayer
+{
+    public static class SpecificationEvaluator
+    {
+        // Create Query
+
+        public static IQueryable<TEntity> CreateQuery<TEntity,TKey> (IQueryable<TEntity> inputQuery, ISpecififcations<TEntity,TKey> specififcations  )
+                                                                where TEntity : BaseEntity<TKey> , new()
+        {
+            var query = inputQuery;
+            // Apply Criteria
+            if (specififcations.Criteria is not null)
+            {
+                query = query.Where(specififcations.Criteria);
+            }
+
+            // Apply Ordering
+            if (specififcations.OrderBy is not null)
+            {
+                query = query.OrderBy(specififcations.OrderBy);
+            }
+            if (specififcations.OrderByDesc is not null)
+            {
+                query = query.OrderByDescending(specififcations.OrderByDesc);
+            }
+            // Apply Pagination
+            if (specififcations.IsPaginated)
+            {
+                query = query.Skip(specififcations.Skip).Take(specififcations.Take);
+            }
+
+
+
+            // Apply Include Expressions
+            if (specififcations.IncludeExpressions is not null && specififcations.IncludeExpressions.Count > 0 )
+            {
+                //foreach (var includeExpression in specififcations.IncludeExpressions)
+                //{
+                //    query = query.Include(includeExpression);
+                //}
+                query =  specififcations.IncludeExpressions
+                        .Aggregate(query, (current, includeExpression) => current.Include(includeExpression));
+            }
+           
+
+            return query;
+        }
+
+
+
+
+    }
+}

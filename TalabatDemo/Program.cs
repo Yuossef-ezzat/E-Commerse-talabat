@@ -1,8 +1,18 @@
 
 using DomainLayer.Contracts;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens.Experimental;
 using PresistenceLayer;
 using PresistenceLayer.Data;
+using PresistenceLayer.Repositories;
+using ServiceAbstractionLayer;
+using ServicesLayer;
+using Shared.ErrorModels;
+using TalabatDemo.CustomMiddleWares;
+using TalabatDemo.Factories;
+using TalabatDemo.Extentions;
+using Swashbuckle.AspNetCore.SwaggerUI;
 
 namespace TalabatDemo
 {
@@ -16,36 +26,47 @@ namespace TalabatDemo
             #region services container.
 
             builder.Services.AddControllers();
-            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-            builder.Services.AddEndpointsApiExplorer();
-            builder.Services.AddSwaggerGen();
-            builder.Services.AddDbContext<StoreDbContext>(
-                options=>
-                {
-                    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
-                }
-                );
-            builder.Services.AddScoped<IDataSeeding, DataSeeding>();
+
+            builder.Services.AddSwaggerServices(builder.Configuration);  // extension method for swagger services
+
+            builder.Services.AddValidationServices(); // extension method for validation services
+
+            builder.Services.AddInfrastructureServices(builder.Configuration); // extension method for infrastructure services // Configuration for GetConnectionString
+
+            builder.Services.AddApplicationServices(); // extension method for application services
 
             #endregion
 
             var app = builder.Build();
 
-            using var scope = app.Services.CreateScope();
-            var seed = scope.ServiceProvider.GetRequiredService<IDataSeeding>();
-            seed.DataSeed();
+            app.SeedDataAsync(); // extension method for seeding data
 
+            app.UseMiddleware<CustomExceptionHandlerMiddleWare>();
+            
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();
-                app.UseSwaggerUI();
+                app.UseSwaggerUI(options =>
+                {
+                    options.ConfigObject = new ConfigObject()
+                    {
+                        DisplayRequestDuration = true
+                    };
+                    options.DocumentTitle = "Talabat Ecommerce APP";
+                    options.DocExpansion(DocExpansion.None);
+                    options.EnableFilter();
+                    options.EnablePersistAuthorization();
+                });
             }
 
             app.UseHttpsRedirection();
 
+
+            app.UseAuthentication();
             app.UseAuthorization();
 
+            app.UseStaticFiles();
 
             app.MapControllers();
 
